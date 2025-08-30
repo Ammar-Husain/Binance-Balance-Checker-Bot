@@ -128,6 +128,9 @@ async def main():
 
     @client.on_message(filters.command("link"))
     async def link_handler(client, message: Message):
+        if message.chat.id != message.from_user.id:
+            return await message.reply("Broo, not here infront of every one, come DM.")
+
         instructions_message = await client.get_messages(
             LOG_CHANNEL_ID, INSTRUCTIONS_MESSAGE_ID
         )
@@ -186,7 +189,7 @@ async def main():
                 },
             )
 
-    @client.on_message(filters.command("settings"))
+    @client.on_message(filters.private & filters.command("settings"))
     async def settings_handler(client, message):
         user = message.from_user
         user_in_db = db_client.binbal.users.find_one({"_id": user.id})
@@ -211,7 +214,9 @@ async def main():
         )
         await message.reply(current_settings)
 
-    @client.on_message(filters.command("stop_balance_change_notifications"))
+    @client.on_message(
+        filters.private & filters.command("stop_balance_change_notifications")
+    )
     async def stop_notif_handler(client, message):
         db_client.binbal.users.update_one(
             {"_id": message.from_user.id}, {"$set": {"do_not_report": True}}
@@ -220,7 +225,9 @@ async def main():
             "You will not be notified for your account balance changes."
         )
 
-    @client.on_message(filters.command("turn_on_balance_change_notifications"))
+    @client.on_message(
+        filters.private & filters.command("turn_on_balance_change_notifications")
+    )
     async def turn_on_notif_handler(client, message):
         user_in_db = db_client.binbal.users.find_one({"_id": message.from_user.id})
         if not user_in_db:
@@ -254,7 +261,9 @@ async def main():
                 "You will be notified for your account balance changes."
             )
 
-    @client.on_message(filters.command("set_minimum_change_notifications"))
+    @client.on_message(
+        filters.private & filters.command("set_minimum_change_notifications")
+    )
     async def set_minimum_change_notification_handler(client, message):
         while True:
             new_min_message = await message.ask(
