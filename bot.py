@@ -129,7 +129,7 @@ async def main():
     @client.on_message(filters.command("link"))
     async def link_handler(client, message: Message):
         if message.chat.id != message.from_user.id:
-            return await message.reply("Broo, not here infront of every one, come DM.")
+            return await message.reply("Broo, not here in front of every one, come DM.")
 
         instructions_message = await client.get_messages(
             LOG_CHANNEL_ID, INSTRUCTIONS_MESSAGE_ID
