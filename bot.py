@@ -6,10 +6,12 @@ from pyrogram import Client, filters
 from pyrogram.types import BotCommand, Message
 from pyrogram.types.payments import input_stars_transaction
 
+from server import run_server
 from utils.connect_to_mongo import connect_to_mongo
 from utils.errors import CredentialsError
 from utils.get_balance_status import get_balance_status
 
+run_server()
 dotenv.load_dotenv()
 
 

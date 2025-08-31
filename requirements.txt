@@ -3,3 +3,4 @@ dotenv
 pyrofork
 tgcrypto
 pymongo
+flask
