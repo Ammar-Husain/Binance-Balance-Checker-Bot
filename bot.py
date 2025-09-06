@@ -117,7 +117,7 @@ async def main():
             )
         except Exception as e:
             await log(e)
-            await message.reply(
+            return await message.reply(
                 "Sorry The bot is temporaly unavailable, we will try to solve this issue as soon as possible."
             )
 
@@ -322,6 +322,7 @@ async def main():
                     continue
                 except Exception as e:
                     await log(e)
+                    continue
 
                 if user["_id"] not in USERS_STATUSES:
                     USERS_STATUSES[user["_id"]] = user_current_state
