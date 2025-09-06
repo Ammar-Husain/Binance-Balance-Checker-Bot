@@ -2,6 +2,7 @@ import asyncio
 import os
 
 import dotenv
+import requests
 from pyrogram import Client, filters
 from pyrogram.types import BotCommand, Message
 from pyrogram.types.payments import input_stars_transaction
@@ -27,6 +28,8 @@ MASTER_ID = int(os.getenv("MASTER_ID", ""))
 
 DETECTOR_COOLDOWN_INTERVAL = int(os.getenv("DETECTOR_COOLDOWN_INTERVAL", 10))
 DEFAULT_MINIMUM_REPORT_AMOUNT = float(os.getenv("DEFAULT_MINIMUM_REPORT_AMOUNT", ".5"))
+
+SERVICE_URL = os.getenv("SERVICE_URL", None)
 
 client = Client(name="BinBalBot", api_id=API_ID, api_hash=API_HASH, bot_token=BOT_TOKEN)
 USERS_STATUSES = {}
@@ -399,11 +402,23 @@ async def main():
     asyncio.create_task(changes_detecter(client))
 
     async def log(text):
-        await client.send_message(LOG_CHANNEL_ID, text)
+        return await client.send_message(LOG_CHANNEL_ID, text)
+
+    async def keep_up():
+        if SERVICE_URL:
+            res = requests.get(SERVICE_URL)
+            return await log(res.text)
+        else:
+            return await log(
+                "Warning: $SERVICE_URL is not set, the service can sleep at anytime."
+            )
 
     print("Bot is running.")
+    m = await keep_up()
     while True:
-        await asyncio.sleep(10)
+        await asyncio.sleep(60)
+        await m.delete()
+        m = await keep_up()
 
 
 if __name__ == "__main__":
